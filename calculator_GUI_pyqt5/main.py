@@ -22,10 +22,7 @@ class App(QWidget):
     def __init__(self):
         super().__init__()
         self.ui = uic.loadUi(UI_PATH)  # имя шаблона, создание графического объекта
-        self.start()  # вызывает графический шаблон
         self.set()
-
-    def start(self):
         self.ui.show()  # показывает шаблон
 
     def set(self):  # метод, который связывает все кнопки
@@ -47,9 +44,9 @@ class App(QWidget):
         self.ui.btn_minus.clicked.connect(lambda: self.click('-'))
         self.ui.btn_eq.clicked.connect(self.calculate)
         self.ui.btn_multi.clicked.connect(lambda: self.click('*'))
-        self.ui.btn_point.clicked.connect(lambda: self.click(num='.'))
-        # self.ui.btn_a.clicked.connect(lambda: self.click())
-        # self.ui.btn_b.clicked.connect(lambda: self.click())
+        self.ui.btn_point.clicked.connect(lambda: self.click('.'))
+        self.ui.btn_sqrt.clicked.connect(self.sqrt)
+        self.ui.btn_power.clicked.connect(self.power)
         # self.ui.btn_c.clicked.connect(lambda: self.click())
         # self.ui.btn_d.clicked.connect(lambda: self.click())
         self.ui.btn_clear.clicked.connect(self.function_clear)
@@ -60,21 +57,24 @@ class App(QWidget):
 
     def display(self, text):
         # метод принимает аргумент (цифру, которая отображается по умолчанию) и выводит на label_display
-        while len(result_for_clear) != 0:
+        text_on_display.append(str(text))
+        if len(result_for_clear) != 0 and result_for_clear[-1] == str(self.ui.label_display.text()) and text_on_display[-1] not in calc_for_main.signs:
+            print('tt')
             self.ui.label_display.clear()
-            del result_for_clear[0]
-        a = self.ui.label_display
-        text_old = a.text()
-        if text_old == '0':
-            text_old = ''
-        elif text_old == '.':
-            text_old = '0.'
-        text = text_old + str(text)  # text = '%s%s' % (text_old, text)
-        print(text)
-        a.setText(text)
+        print('text_on_display', text_on_display, text_on_display[-1])
+        symbol = str(self.ui.label_display.text())
+        print('symbol=', symbol, type(symbol))
+        if symbol in ('0', '0.0'):
+            symbol = ''
+        elif symbol == '.':
+            symbol = '0.'
+        all_text = symbol + str(text)
+        self.ui.label_display.setText(all_text)
 
     def function_clear(self):
         self.ui.label_display.setText('0')
+        while len(result_for_clear) != 0:
+            del result_for_clear[0]
 
     def function_delete(self):
         value = self.ui.label_display.text()
@@ -82,13 +82,23 @@ class App(QWidget):
         if len(value) == 1:
             self.ui.label_display.setText('0')
 
+    def sqrt(self):
+        result_sqrt = calc_for_main.sqrt(self.ui.label_display.text())
+        result_for_clear.append(result_sqrt)
+        self.ui.label_display.clear()
+        self.display(result_sqrt)
+
+    def power(self):
+        result_power = pow(float(calc_for_main.expression(self.ui.label_display.text())), 2)
+        self.ui.label_display.setText(str(result_power))
+        result_for_clear.append(str(result_power))
+        text_on_display.append(str(result_power))
+
     def calculate(self):
         result = calc_for_main.expression(self.ui.label_display.text())
-        # result = expression(self.ui.label_display.text())
-        self.ui.label_display.setText(str(result))
-        print(result)
         result_for_clear.append(result)
-        print(result_for_clear)
+        self.ui.label_display.clear()
+        self.display(result)
 
     @staticmethod
     def help_button():
@@ -103,6 +113,8 @@ Or you can set your variable a=5 and then use 4-a+2 in the expression.''')
 
 
 result_for_clear = []
+text_on_display = []
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     example = App()  # экземплаяр класса (графический объект класса), приложение является объектом класса

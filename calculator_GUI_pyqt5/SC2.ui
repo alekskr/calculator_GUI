@@ -238,7 +238,7 @@ QPushButton:pressed{
        </widget>
       </item>
       <item row="3" column="4">
-       <widget class="QPushButton" name="btn_plus_3">
+       <widget class="QPushButton" name="btn_power">
         <property name="minimumSize">
          <size>
           <width>65</width>

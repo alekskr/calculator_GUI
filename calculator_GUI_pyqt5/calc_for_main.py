@@ -1,3 +1,6 @@
+import math
+
+
 def expression(user_input):
     """Work with expression."""
     for i in user_input:
@@ -17,6 +20,16 @@ def expression(user_input):
     else:
         infix_list = from_string_to_list(user_input)
         return from_infix_to_postfix(infix_list)
+
+
+def sqrt(a):
+    b = expression(a)
+    try:
+        return str(round(math.sqrt(float(b)), 3))
+    except ValueError:
+        return 'Invalid expression'
+    except TypeError:
+        return 'Invalid expression'
 
 
 def from_string_to_list(infix):
