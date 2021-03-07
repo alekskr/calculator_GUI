@@ -263,7 +263,7 @@ QPushButton:pressed{
 } /* при нажатии */</string>
         </property>
         <property name="text">
-         <string>^</string>
+         <string>x²</string>
         </property>
        </widget>
       </item>
@@ -728,7 +728,7 @@ QPushButton:pressed{
 } /* при нажатии */</string>
         </property>
         <property name="text">
-         <string>SQRT</string>
+         <string>√</string>
         </property>
        </widget>
       </item>

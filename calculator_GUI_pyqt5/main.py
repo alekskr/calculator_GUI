@@ -1,4 +1,4 @@
-"""test"""
+"""Calculator_GUI"""
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -25,56 +25,58 @@ class App(QWidget):
         self.set()
         self.ui.show()  # показывает шаблон
 
-    def set(self):  # метод, который связывает все кнопки
-        self.ui.btn_0.clicked.connect(lambda: self.click(num=0))
-        self.ui.btn_1.clicked.connect(lambda: self.click(num=1))
-        self.ui.btn_2.clicked.connect(lambda: self.click(num=2))
-        self.ui.btn_3.clicked.connect(lambda: self.click(num=3))
-        self.ui.btn_4.clicked.connect(lambda: self.click(num=4))
-        self.ui.btn_5.clicked.connect(lambda: self.click(num=5))
-        self.ui.btn_6.clicked.connect(lambda: self.click(num=6))
-        self.ui.btn_7.clicked.connect(lambda: self.click(num=7))
-        self.ui.btn_8.clicked.connect(lambda: self.click(num=8))
-        self.ui.btn_9.clicked.connect(lambda: self.click(num=9))
-        self.ui.btn_back.clicked.connect(self.function_delete)
-        self.ui.btn_division.clicked.connect(lambda: self.click('/'))
-        self.ui.btn_left.clicked.connect(lambda: self.click(num='('))
-        self.ui.btn_right.clicked.connect(lambda: self.click(num=')'))
+    def set(self):
+        # метод, который связывает все кнопки
+        self.ui.btn_0.clicked.connect(lambda: self.click('0'))
+        self.ui.btn_1.clicked.connect(lambda: self.click('1'))
+        self.ui.btn_2.clicked.connect(lambda: self.click('2'))
+        self.ui.btn_3.clicked.connect(lambda: self.click('3'))
+        self.ui.btn_4.clicked.connect(lambda: self.click('4'))
+        self.ui.btn_5.clicked.connect(lambda: self.click('5'))
+        self.ui.btn_6.clicked.connect(lambda: self.click('6'))
+        self.ui.btn_7.clicked.connect(lambda: self.click('7'))
+        self.ui.btn_8.clicked.connect(lambda: self.click('8'))
+        self.ui.btn_9.clicked.connect(lambda: self.click('9'))
+
+        self.ui.btn_left.clicked.connect(lambda: self.click('('))
+        self.ui.btn_right.clicked.connect(lambda: self.click(')'))
         self.ui.btn_plus.clicked.connect(lambda: self.click('+'))
         self.ui.btn_minus.clicked.connect(lambda: self.click('-'))
-        self.ui.btn_eq.clicked.connect(self.calculate)
+        self.ui.btn_division.clicked.connect(lambda: self.click('/'))
         self.ui.btn_multi.clicked.connect(lambda: self.click('*'))
         self.ui.btn_point.clicked.connect(lambda: self.click('.'))
+        self.ui.btn_eq.clicked.connect(self.calculate)
         self.ui.btn_sqrt.clicked.connect(self.sqrt)
         self.ui.btn_power.clicked.connect(self.power)
+        self.ui.btn_clear.clicked.connect(self.function_clear)
+        self.ui.btn_back.clicked.connect(self.function_delete)
         # self.ui.btn_c.clicked.connect(lambda: self.click())
         # self.ui.btn_d.clicked.connect(lambda: self.click())
-        self.ui.btn_clear.clicked.connect(self.function_clear)
         # self.ui.btn_help.clicked.connect(self.help_button)
 
-    def click(self, num):  # метод принимает аргумент (цифру, на которую будем нажимать)
-        self.display(text=num)
+    def click(self, text):  # метод принимает аргумент (цифру, на которую будем нажимать)
+        self.display(text)
 
     def display(self, text):
-        # метод принимает аргумент (цифру, которая отображается по умолчанию) и выводит на label_display
-        text_on_display.append(str(text))
-        if len(result_for_clear) != 0 and result_for_clear[-1] == str(self.ui.label_display.text()) and text_on_display[-1] not in calc_for_main.signs:
-            print('tt')
+        # метод принимает аргумент и выводит на label_display
+        text_on_display.append(text)
+        if len(all_results) != 0 and all_results[-1] == self.ui.label_display.text() and \
+                text_on_display[-1] not in calc_for_main.signs:
             self.ui.label_display.clear()
-        print('text_on_display', text_on_display, text_on_display[-1])
-        symbol = str(self.ui.label_display.text())
-        print('symbol=', symbol, type(symbol))
+        symbol = self.ui.label_display.text()
         if symbol in ('0', '0.0'):
             symbol = ''
         elif symbol == '.':
             symbol = '0.'
-        all_text = symbol + str(text)
+        all_text = symbol + text
         self.ui.label_display.setText(all_text)
+        # if len(all_text) < 18:
+        #     self.ui.label_display.setText(all_text)
 
     def function_clear(self):
         self.ui.label_display.setText('0')
-        while len(result_for_clear) != 0:
-            del result_for_clear[0]
+        while len(all_results) != 0:
+            del all_results[0]
 
     def function_delete(self):
         value = self.ui.label_display.text()
@@ -84,19 +86,19 @@ class App(QWidget):
 
     def sqrt(self):
         result_sqrt = calc_for_main.sqrt(self.ui.label_display.text())
-        result_for_clear.append(result_sqrt)
+        all_results.append(result_sqrt)
         self.ui.label_display.clear()
         self.display(result_sqrt)
 
     def power(self):
-        result_power = pow(float(calc_for_main.expression(self.ui.label_display.text())), 2)
-        self.ui.label_display.setText(str(result_power))
-        result_for_clear.append(str(result_power))
-        text_on_display.append(str(result_power))
+        result_power = calc_for_main.power(self.ui.label_display.text())
+        all_results.append(result_power)
+        self.ui.label_display.clear()
+        self.display(result_power)
 
     def calculate(self):
         result = calc_for_main.expression(self.ui.label_display.text())
-        result_for_clear.append(result)
+        all_results.append(result)
         self.ui.label_display.clear()
         self.display(result)
 
@@ -112,11 +114,10 @@ Or you can set your variable a=5 and then use 4-a+2 in the expression.''')
         window_help.exec_()
 
 
-result_for_clear = []
+all_results = []
 text_on_display = []
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     example = App()  # экземплаяр класса (графический объект класса), приложение является объектом класса
-    sys.exit(app.exec_())  # завершает приложение, останавливает скрипт
-    # app.exec_()  # завершает приложение, останавливает скрипт
+    sys.exit(app.exec_())  # или так: app.exec_() - завершает приложение, останавливает скрипт

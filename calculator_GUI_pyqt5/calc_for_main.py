@@ -11,9 +11,9 @@ def expression(user_input):
         elif i not in signs and not i.isalnum() and i not in ('(', ')', '=', '.', ','):
             return 'Invalid expression'
     if user_input.isalpha():
-        return_variable(user_input)
-    elif (user_input[0] not in ('-', '+', '(', ')') and not user_input[0].isalnum()) or (
-            user_input[-1] not in (')',) and not user_input[-1].isalnum()):
+        return return_variable(user_input)
+    elif (user_input[0] not in ('-', '+', '(', ')') and not user_input[0].isalnum()) or \
+            (user_input[-1] not in (')',) and not user_input[-1].isalnum()):
         return 'Invalid expression'
     elif '=' in user_input:
         assignment(user_input)
@@ -26,6 +26,16 @@ def sqrt(a):
     b = expression(a)
     try:
         return str(round(math.sqrt(float(b)), 3))
+    except ValueError:
+        return 'Invalid expression'
+    except TypeError:
+        return 'Invalid expression'
+
+
+def power(a):
+    b = expression(a)
+    try:
+        return str(round(pow(float(b), 2), 3))
     except ValueError:
         return 'Invalid expression'
     except TypeError:
